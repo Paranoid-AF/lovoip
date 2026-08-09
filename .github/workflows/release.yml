@@ -1,4 +1,4 @@
-﻿name: Release
+name: Release
 
 # Build the Windows x64 plugin and attach it to the GitHub Release whenever a
 # release is created (published).

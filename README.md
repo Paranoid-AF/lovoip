@@ -36,7 +36,7 @@ external/         clap/ (header submodule), licenses/
 ## Build (Windows, MSVC)
 
 ```
-git submodule update --init
+git submodule update --init --recursive
 scripts\build.ps1
 ```
 

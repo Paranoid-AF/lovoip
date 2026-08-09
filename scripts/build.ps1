@@ -1,4 +1,4 @@
-﻿# Build lovoip.clap and lovoip-harness.exe with MSVC.
+# Build lovoip.clap and lovoip-harness.exe with MSVC.
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release')]
@@ -27,6 +27,16 @@ Enter-MsvcEnv
 
 $buildDir = Join-Path $root 'build'
 New-Item -ItemType Directory -Force $buildDir | Out-Null
+$clapHeader = Join-Path $root 'external\clap\include\clap\clap.h'
+if (-not (Test-Path -LiteralPath $clapHeader)) {
+    throw "CLAP headers not found. Initialize the submodule: git submodule update --init --recursive"
+}
+
+# Prepend our include dirs to the INCLUDE environment variable. MSVC always
+# searches INCLUDE for #include <...> headers; on some toolchains/runners a
+# command-line /I is not honored reliably, while INCLUDE (which vcvars sets for
+# the system headers) is. Keep the /I flags too for good measure.
+$env:INCLUDE = "$root\external\clap\include;$root\include;$env:INCLUDE"
 
 $inc = @("/I`"$root\external\clap\include`"", "/I`"$root\include`"")
 $common = @('/nologo', '/std:c++17', '/EHsc', '/W4', '/utf-8') + $inc
