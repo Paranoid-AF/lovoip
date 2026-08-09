@@ -22,6 +22,24 @@ live without timing offset.
 
 Works in Kushview Element and any other CLAP host.
 
+### Installing in Element
+
+1. [Download latest version](https://github.com/Paranoid-AF/lovoip/releases) and extract `lovoip.clap` file to `C:\Program Files\Common Files\CLAP`.
+
+2. Open Kushview Element, open `View - Plugin Manager` from menu, and click "Scan".
+
+![Demo: scan for plugins](.github/readme/scan.png)
+
+3. Install [VB Audio Cable](https://vb-audio.com/Cable/) and choose `CABLE Input (VB-Audio Virtual Cable)` as output device. For input device, choose your actual microphone.
+
+![Demo: setup device](.github/readme/device.png)
+
+4. Drag `lovoip` from left plugin panel to graph nodes, connect it with audio input and output. Double click the plugin node to toggle quality level.
+
+![Demo: node graph](.github/readme/setup.png)
+
+5. In your voice chat app, choose `CABLE Output (VB-Audio Virtual Cable)` as input device.
+
 ## Layout
 
 ```
