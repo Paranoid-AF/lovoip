@@ -1,0 +1,49 @@
+﻿name: Release
+
+# Build the Windows x64 plugin and attach it to the GitHub Release whenever a
+# release is created (published).
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write # required to upload assets to the release
+
+jobs:
+  build-windows-x64:
+    name: Windows x64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout (with clap submodule)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build lovoip.clap
+        shell: pwsh
+        run: |
+          & scripts\build.ps1 -Config Release
+          if ($LASTEXITCODE -ne 0) { throw "build failed" }
+
+      - name: Smoke test the built plugin
+        shell: pwsh
+        run: |
+          & build\lovoip-harness.exe --selftest build\out\selftest.wav
+          if ($LASTEXITCODE -ne 0) { throw "self-test failed" }
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $out = "build\lovoip-windows-x64"
+          New-Item -ItemType Directory -Force $out | Out-Null
+          Copy-Item build\lovoip.clap $out\
+          Copy-Item README.md, LICENSE $out\
+          Compress-Archive -Path "$out\*" -DestinationPath build\lovoip-windows-x64.zip -Force
+
+      - name: Upload assets to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build\lovoip.clap
+            build\lovoip-windows-x64.zip
